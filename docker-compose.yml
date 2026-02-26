@@ -27,6 +27,13 @@ services:
     restart: "unless-stopped"
     volumes:
       - backend-data:/app/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.optcgsim-aa-download-api.entrypoints=web"
+      - "traefik.http.routers.optcgsim-aa-download-api.rule=PathPrefix(`/optcgsim-aa-download/api`)"
+      - "traefik.http.middlewares.optcgsim-api-strip.stripprefix.prefixes=/optcgsim-aa-download/api"
+      - "traefik.http.routers.optcgsim-aa-download-api.middlewares=optcgsim-api-strip"
+      - "traefik.http.services.optcgsim-aa-download-api.loadbalancer.server.port=8000"
     networks:
       - web
 
