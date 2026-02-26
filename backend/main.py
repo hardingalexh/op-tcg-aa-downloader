@@ -82,11 +82,7 @@ async def download_images(session_id: str):
         for item in session_dir.iterdir():
             if item.is_dir():
                 shutil.copytree(item, temp_path / item.name)
-        
-        # Copy the install script
-        script_path = Path("copy-to-optcgsim.sh")
-        if script_path.exists():
-            shutil.copy(script_path, temp_path / "copy-to-optcgsim.sh")
+
         
         # Create zip archive
         zip_path = shutil.make_archive(f"data/{session_id}", "zip", temp_path)
