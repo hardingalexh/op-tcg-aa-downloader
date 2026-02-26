@@ -7,7 +7,7 @@ RUN npm install
 
 COPY . .
 
-ENV VITE_API_URL=/optcgsim-aa-download/api
+ENV VITE_API_URL=/optcgsim-aa-downloader/api
 RUN npm run build
 
 FROM nginx:alpine
