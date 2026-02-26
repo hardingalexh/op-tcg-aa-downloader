@@ -6,7 +6,7 @@ const deckShareLink = ref("")
 const images = ref([])
 
 onMounted(async () => {
-  const newSession = await fetch(`${URL_BASE}/create_session`).then(d => d.json())
+  const newSession = await fetch(`${URL_BASE}/create_session/`).then(d => d.json())
   session_id.value = newSession
   })
 
