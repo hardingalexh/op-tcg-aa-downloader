@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  frontend:
+    container_name: optcgsim-aa-download-nginx
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: "unless-stopped"
+    ports:
+      - 8901:80
+    depends_on:
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.optcgsim-aa-download.entrypoints=web"
+      - "traefik.http.routers.optcgsim-aa-download.rule=PathPrefix(`/optcgsim-aa-download`)"
+      - "traefik.http.services.optcgsim-aa-download.loadbalancer.server.port=80"
+    networks:
+      - web
+
+  backend:
+    container_name: optcgsim-aa-download-api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: "unless-stopped"
+    volumes:
+      - backend-data:/app/data
+    networks:
+      - web
+
+volumes:
+  backend-data:
+
+networks:
+  web:
+    driver: bridge
+    external: true
+    name: web

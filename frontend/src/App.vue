@@ -1,6 +1,6 @@
 <script setup>
 import {ref, onMounted} from "vue";
-const URL_BASE = "http://localhost:8000"
+const URL_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000"
 const session_id = ref("")
 const deckShareLink = ref("")
 const images = ref([])
@@ -136,22 +136,20 @@ async function downloadZip() {
           <div class="text-gray-600 text-sm leading-relaxed space-y-2">
             <p>Once downloaded and unzipped, add these images to your local OPTCGSim.</p>
             <hr />
-            <p><strong>Windows</strong>:
+            <strong>Windows</strong>:
               <ol>
                 <li>Locate your OPTCGSim app</li>
                 <li>Navigate to \Builds_Windows\OPTCGSim_Data\StreamingAssets\Cards\</li>
                 <li>Paste the contents of the zip file, choosing the "merge" option</li>
               </ol>
-            </p>
             <hr />
-            <p><strong>Mac</strong>:
+            <strong>Mac</strong>:
               <ol>
                 <li>Locate your OPTCGSim app</li>
                 <li>Right-click and choose "Show Package Contents"</li>
                 <li>Navigate to Contents/Resources/Data/StreamingAssets/Cards</li>
                 <li>Paste the contents of the zip file, choosing the "merge" option</li>
               </ol>
-            </p>
           </div>
         </div>
       </div>
