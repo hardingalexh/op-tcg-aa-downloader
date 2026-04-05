@@ -53,6 +53,8 @@ def save_card(session_id: str, card: dict):
 def parse_deck(url_string: str, session_id: str) -> list:
     deck_recipe = extract_deck_recipe(url_string)
     deck = fetch_deck(deck_recipe)
+    if deck is None:
+        raise ValueError("Could not retrieve deck. The decklist may be private or the link may be invalid.")
     alt_arts = []
     cards = deck["main_deck"] + deck["extra_deck"] + deck["side_deck"]
     for card in cards:

@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -38,7 +38,10 @@ class DeckSubmission(BaseModel):
 
 @app.post("/submit_deck/")
 async def submit_deck(sub: DeckSubmission) -> list[str]:
-    return parse_deck(sub.deck, sub.session_id)
+    try:
+        return parse_deck(sub.deck, sub.session_id)
+    except Exception:
+        raise HTTPException(status_code=422, detail="Could not retrieve deck. The decklist may be private or the link may be invalid.")
 
 
 @app.get("/images/{session_id}")

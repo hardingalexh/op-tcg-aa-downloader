@@ -4,6 +4,7 @@ const URL_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000"
 const session_id = ref("")
 const deckShareLink = ref("")
 const images = ref([])
+const errorMessage = ref("")
 
 onMounted(async () => {
   const newSession = await fetch(`${URL_BASE}/create_session/`).then(d => d.json())
@@ -16,23 +17,35 @@ async function fetchImages() {
 }
 
 async function submitDeck(){
-  const postData = {
-    'session_id': session_id.value,
-    'deck': deckShareLink.value
-  }
-const submission = await fetch(`${URL_BASE}/submit_deck/`, {
-  method: 'POST', // Specify the method
-  headers: {
-      'Content-Type': 'application/json; charset=UTF-8'
-  },
-  body: JSON.stringify(postData)
-})
-.then(response => response.json()) // Parse the JSON response
-console.log(submission)
+  errorMessage.value = ""
+  try {
+    const postData = {
+      'session_id': session_id.value,
+      'deck': deckShareLink.value
+    }
+    const response = await fetch(`${URL_BASE}/submit_deck/`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify(postData)
+    })
 
-// Fetch updated images after submission
-await fetchImages()
-deckShareLink.value = ""
+    if (!response.ok) {
+      const err = await response.json().catch(() => null)
+      errorMessage.value = err?.detail || "Something went wrong. The decklist may be private or the link may be invalid."
+      return
+    }
+
+    const submission = await response.json()
+    console.log(submission)
+
+    // Fetch updated images after submission
+    await fetchImages()
+    deckShareLink.value = ""
+  } catch {
+    errorMessage.value = "Something went wrong. The decklist may be private or the link may be invalid."
+  }
 }
 
 async function downloadZip() {
@@ -99,6 +112,9 @@ async function downloadZip() {
               @click="submitDeck"
               class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg px-4 py-2 transition-colors cursor-pointer"
             >Submit</button>
+          </div>
+          <div v-if="errorMessage" class="bg-red-50 border border-red-300 text-red-700 rounded-lg p-3 mt-3 text-sm">
+            {{ errorMessage }}
           </div>
         </div>
 
